@@ -8,8 +8,8 @@ if [ -f "$PIDFILE" ] && ps -p "$(cat "$PIDFILE")" >/dev/null 2>&1; then
   rm -f "$PIDFILE"
 else
   systemd-inhibit \
-    --what=idle:sleep \
-    --why="Manual caffeine" \
+    --what=idle \
+    --why="Manual caffeine (idle only)" \
     --mode=block \
     sh -c 'echo $$ > "'"$PIDFILE"'"; sleep infinity' &
 fi
