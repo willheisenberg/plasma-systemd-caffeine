@@ -1,0 +1,19 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "tesla@example.com",
+                "Name": "Tesla"
+            }
+        ],
+        "Category": "Utilities",
+        "Description": "Prevent system sleep and screen blanking with a click. Supports countdown timers, auto-inhibit for configured apps, and automatic pause on screen lock.",
+        "Icon": "caffeine-cup-full",
+        "Id": "com.github.tesla.plasmacaffeine",
+        "License": "GPL-2.0-or-later",
+        "Name": "Caffeine (systemd)",
+        "Version": "2.0"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

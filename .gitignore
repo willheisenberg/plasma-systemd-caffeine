@@ -1,0 +1,9 @@
+# Ignore local temporary/runtime files and copied GNOME extension directory
+gnome-shell-extension-caffeine/
+.gemini/
+.idea/
+.vscode/
+*.state
+*.pid
+*~
+*.log
