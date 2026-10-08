@@ -4,6 +4,7 @@ RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 PIDFILE="$RUNTIME_DIR/caffeine-inhibit.pid"
 LISTENER_PIDFILE="$RUNTIME_DIR/caffeine-listener.pid"
 PAUSED_STATE="$RUNTIME_DIR/caffeine-paused.state"
+LOCK_PIDFILE="$RUNTIME_DIR/caffeine-lock-inhibit.pid"
 MANUAL_STATE="$RUNTIME_DIR/caffeine-manual.state"
 OVERRIDE_STATE="$RUNTIME_DIR/caffeine-override.state"
 APPS_CONFIG="$HOME/.config/caffeine-apps.list"
@@ -60,7 +61,12 @@ fi
 # 6. Maintain background process states dynamically
 if [ "$should_be_active" = true ]; then
     if [ "$is_paused" = true ]; then
-        echo "paused"
+        # Locked: still "active" if the lock-time sleep inhibit is held
+        if [ -f "$LOCK_PIDFILE" ] && kill -0 "$(cat "$LOCK_PIDFILE" 2>/dev/null)" 2>/dev/null; then
+            echo "active"
+        else
+            echo "paused"
+        fi
     else
         # Ensure systemd-inhibit is running
         if [ "$inhibit_running" = false ]; then
@@ -98,6 +104,11 @@ else
             kill "$LISTENER_PID" >/dev/null 2>&1
         fi
         rm -f "$LISTENER_PIDFILE"
+    fi
+    # Clean up lock-time sleep inhibit
+    if [ -f "$LOCK_PIDFILE" ]; then
+        kill "$(cat "$LOCK_PIDFILE")" >/dev/null 2>&1
+        rm -f "$LOCK_PIDFILE"
     fi
     rm -f "$PAUSED_STATE"
     echo "inactive"

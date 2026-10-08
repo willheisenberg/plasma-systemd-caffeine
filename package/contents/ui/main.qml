@@ -53,6 +53,15 @@ PlasmoidItem {
         }
     }
 
+    // Mirror the keep-awake-on-lock setting to a flag file read by the scripts
+    function syncLockConfig() {
+        if (plasmoid.configuration.keepAwakeOnLock) {
+            executable.exec("touch $HOME/.config/caffeine-keep-awake-on-lock");
+        } else {
+            executable.exec("rm -f $HOME/.config/caffeine-keep-awake-on-lock");
+        }
+    }
+
     // Start a custom duration inhibit
     function startTimer(minutes) {
         timerSecondsRemaining = minutes * 60;
@@ -267,10 +276,14 @@ PlasmoidItem {
             root.syncAppsConfig();
             executable.exec("$HOME/.local/bin/caffeine-status.sh")
         }
+        function onKeepAwakeOnLockChanged() {
+            root.syncLockConfig();
+        }
     }
 
     // Sync app config on startup
     Component.onCompleted: {
         syncAppsConfig();
+        syncLockConfig();
     }
 }

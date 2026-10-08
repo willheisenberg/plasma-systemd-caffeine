@@ -13,6 +13,7 @@ No Python. No tray hacks. No X11 dependencies. Fully Wayland-native.
 - 🔄 **Auto-inhibit apps** — configure apps (e.g. `vlc`, `mpv`, `steam`) that automatically activate Caffeine when running
 - 🚫 **Manual override** — temporarily force-deactivate Caffeine even when an auto-inhibit app is running by clicking the cup. It resumes auto-inhibition once the app is closed.
 - 🔒 **Lock-screen pause** — automatically pauses inhibit when you lock your screen so monitors can still sleep, resumes on unlock
+- 🌙 **Keep awake while locked (optional)** — let the screens turn off on lock but keep the system from suspending, e.g. for long file transfers
 - 🎨 **Theme-adaptive icons** — symbolic SVG icons that match your Plasma color scheme (light & dark)
 - 🔔 **Desktop notifications** — get notified when Caffeine activates or deactivates
 - ⚙️ **systemd-native** — uses `systemd-inhibit` directly, no deprecated APIs
@@ -116,6 +117,12 @@ vlc mpv steam obs
 Toggle **"Use bundled Caffeine icons instead of system theme icons"** to choose between:
 - **Disabled (Default):** Uses the icons provided by your current active system/panel icon theme (e.g. `Kora`, `Breeze`).
 - **Enabled:** Forces the use of the original, bundled GNOME Caffeine coffee cup icons.
+
+### Lock screen
+
+Toggle **"Keep system awake while screen is locked"** to choose what happens when you lock the screen while Caffeine is active:
+- **Disabled (Default):** The inhibit is paused. Screens turn off and the system may suspend according to your power settings.
+- **Enabled:** The `idle` inhibit is swapped for a `sleep` inhibit until you unlock. Screens may still turn off, but the system will not suspend.
 
 ---
 

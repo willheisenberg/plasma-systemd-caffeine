@@ -8,6 +8,7 @@ Kirigami.FormLayout {
 
     property alias cfg_autoInhibitApps: autoInhibitAppsField.text
     property alias cfg_useCustomIcons: useCustomIconsField.checked
+    property alias cfg_keepAwakeOnLock: keepAwakeOnLockField.checked
 
     TextField {
         id: autoInhibitAppsField
@@ -28,5 +29,19 @@ Kirigami.FormLayout {
         id: useCustomIconsField
         Kirigami.FormData.label: i18n("Icon preference:")
         text: i18n("Use bundled Caffeine icons instead of system theme icons")
+    }
+
+    CheckBox {
+        id: keepAwakeOnLockField
+        Kirigami.FormData.label: i18n("Lock screen:")
+        text: i18n("Keep system awake while screen is locked")
+    }
+
+    Label {
+        text: i18n("Screens may still turn off, but the system will not suspend.\nUseful for long-running jobs such as file transfers.")
+        font.italic: true
+        font.pointSize: 9
+        color: Kirigami.Theme.disabledTextColor
+        Layout.fillWidth: true
     }
 }
