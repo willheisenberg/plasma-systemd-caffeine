@@ -76,17 +76,22 @@ if [ "$should_be_active" = true ]; then
                 --mode=block \
                 sleep infinity &
             echo $! > "$PIDFILE"
+        fi
 
-            # Ensure lock-listener is running
-            if [ ! -f "$LISTENER_PIDFILE" ] || ! kill -0 "$(cat "$LISTENER_PIDFILE" 2>/dev/null)" 2>/dev/null; then
-                LISTENER_BIN="$HOME/.local/bin/caffeine-lock-listener.sh"
-                if [ ! -f "$LISTENER_BIN" ]; then
-                    LISTENER_BIN="$(dirname "${BASH_SOURCE[0]}")/caffeine-lock-listener.sh"
-                fi
-                if [ -f "$LISTENER_BIN" ]; then
-                    bash "$LISTENER_BIN" &
-                    echo $! > "$LISTENER_PIDFILE"
-                fi
+        # Ensure lock-listener is running. Checked on every run, not just
+        # when the inhibit is (re)started: a listener that died while the
+        # inhibit kept running would otherwise never come back. Starting a
+        # duplicate is harmless, the listener holds a single-instance lock.
+        if [ ! -f "$LISTENER_PIDFILE" ] || ! kill -0 "$(cat "$LISTENER_PIDFILE" 2>/dev/null)" 2>/dev/null; then
+            LISTENER_BIN="$HOME/.local/bin/caffeine-lock-listener.sh"
+            if [ ! -f "$LISTENER_BIN" ]; then
+                LISTENER_BIN="$(dirname "${BASH_SOURCE[0]}")/caffeine-lock-listener.sh"
+            fi
+            if [ -f "$LISTENER_BIN" ]; then
+                # The listener writes its own pid once it holds the
+                # single-instance lock; writing $! here would record a
+                # pid that a rejected duplicate already gave up.
+                bash "$LISTENER_BIN" &
             fi
         fi
         echo "active"
