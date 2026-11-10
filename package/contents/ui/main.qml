@@ -133,6 +133,20 @@ PlasmoidItem {
             icon.name: "preferences-system-time"
             visible: root.caffeineState === "inactive"
             onTriggered: root.startTimer(120)
+        },
+        PlasmaCore.Action {
+            id: keepAwakeAction
+            text: i18n("Keep system awake while screen is locked")
+            icon.name: "system-lock-screen"
+            checkable: true
+            checked: plasmoid.configuration.keepAwakeOnLock
+            onTriggered: {
+                // Derive from the config, not from `checked`, so the result is
+                // the same whether or not the action toggled itself first.
+                var enabled = !plasmoid.configuration.keepAwakeOnLock;
+                plasmoid.configuration.keepAwakeOnLock = enabled;
+                keepAwakeAction.checked = enabled;
+            }
         }
     ]
 
@@ -278,6 +292,8 @@ PlasmoidItem {
         }
         function onKeepAwakeOnLockChanged() {
             root.syncLockConfig();
+            // Keep the context menu entry in sync with the settings dialog
+            keepAwakeAction.checked = plasmoid.configuration.keepAwakeOnLock;
         }
     }
 
